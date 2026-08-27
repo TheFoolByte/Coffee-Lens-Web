@@ -11,7 +11,7 @@
   <link rel="apple-touch-icon" href="apple-touch-icon.png" />
   <link rel="manifest" href="manifest.webmanifest" />
   <style>
-    :root {
+    :root { 
       --green-900: #1B5E20;
       --green-700: #2E7D32;
       --green-500: #4CAF50;
@@ -42,18 +42,11 @@
       border-bottom: 1px solid rgba(46,125,50,0.08);
     }
     .nav { display: flex; align-items: center; justify-content: space-between; height: 64px; }
-    .brand {
-      display: flex; align-items: center; gap: 10px;
-      font-weight: 700; color: var(--green-900);
-    }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; color: var(--green-900); }
     .brand-mark {
       width: 32px; height: 32px; border-radius: 8px;
-      background: var(--leaf-50);
-      display: grid; place-items: center;
-      overflow: hidden;
-    }
-    .brand-mark img {
-      width: 28px; height: 28px; object-fit: contain;
+      background: linear-gradient(135deg, var(--green-500), var(--green-700));
+      display: grid; place-items: center; color: white; font-weight: 800;
     }
     .nav-links { display: flex; gap: 28px; }
     .nav-links a {
@@ -126,9 +119,7 @@
       display: flex; flex-direction: column; align-items: center; justify-content: center;
       color: var(--green-900); padding: 24px; text-align: center;
     }
-    .phone-screen .lens-img {
-      width: 100px; height: 100px; margin-bottom: 16px; object-fit: contain;
-    }
+    .phone-screen .lens { font-size: 80px; margin-bottom: 16px; }
     .phone-screen .label { font-weight: 700; font-size: 18px; }
     .phone-screen .sub { font-size: 12px; color: var(--ink-600); margin-top: 4px; }
 
@@ -210,7 +201,7 @@
   <header>
     <div class="container nav">
       <a href="#" class="brand" aria-label="Coffee Lens home">
-        <span class="brand-mark"><img src="logo-96.png" alt="" /></span>
+        <span class="brand-mark">C</span>
         <span>Coffee Lens</span>
       </a>
       <nav class="nav-links" aria-label="Primary">
@@ -249,7 +240,7 @@
         </div>
         <div class="phone" aria-hidden="true">
           <div class="phone-screen">
-            <img src="logo-256.png" alt="" class="lens-img" />
+            <div class="lens">🌿</div>
             <div class="label">Coffee Lens</div>
             <div class="sub">Tap to scan</div>
           </div>
@@ -351,7 +342,7 @@
   <footer>
     <div class="container">
       <div class="brand">
-        <span class="brand-mark"><img src="logo-96.png" alt="" /></span>
+        <span class="brand-mark">C</span>
         <span>Coffee Lens</span>
       </div>
       <p data-i18n="footer_tag">Deteksi penyakit daun kopi, di mana pun Anda berada.</p>
