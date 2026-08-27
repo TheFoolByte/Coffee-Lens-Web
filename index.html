@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Coffee Lens — aplikasi Android pendeteksi penyakit daun kopi secara offline berbasis AI. Cepat, akurat, tanpa internet." />
+  <meta name="theme-color" content="#2E7D32" />
+  <title>Coffee Lens — Deteksi Penyakit Daun Kopi</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <style>
+    :root {
+      --green-900: #1B5E20;
+      --green-700: #2E7D32;
+      --green-500: #4CAF50;
+      --green-100: #E8F5E9;
+      --leaf-50:   #F5F5F0;
+      --ink-900:   #1A1A1A;
+      --ink-600:   #555;
+      --ink-400:   #888;
+      --radius:    16px;
+      --shadow:    0 8px 24px rgba(46,125,50,0.10);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      color: var(--ink-900);
+      background: var(--leaf-50);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    .container { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+
+    /* HEADER */
+    header {
+      position: sticky; top: 0; z-index: 50;
+      background: rgba(245,245,240,0.85);
+      backdrop-filter: saturate(180%) blur(12px);
+      border-bottom: 1px solid rgba(46,125,50,0.08);
+    }
+    .nav { display: flex; align-items: center; justify-content: space-between; height: 64px; }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; color: var(--green-900); }
+    .brand-mark {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: linear-gradient(135deg, var(--green-500), var(--green-700));
+      display: grid; place-items: center; color: white; font-weight: 800;
+    }
+    .nav-links { display: flex; gap: 28px; }
+    .nav-links a {
+      color: var(--ink-600); text-decoration: none; font-size: 14px; font-weight: 500;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--green-700); }
+    .lang-toggle {
+      display: inline-flex; border: 1px solid rgba(46,125,50,0.2); border-radius: 999px;
+      padding: 4px; background: white;
+    }
+    .lang-toggle button {
+      border: 0; background: transparent; padding: 4px 12px; border-radius: 999px;
+      font-size: 12px; font-weight: 600; color: var(--ink-600); cursor: pointer;
+    }
+    .lang-toggle button.active { background: var(--green-700); color: white; }
+    @media (max-width: 720px) { .nav-links { display: none; } }
+
+    /* HERO */
+    .hero {
+      padding: 80px 0 64px;
+      background:
+        radial-gradient(ellipse at top right, var(--green-100) 0%, transparent 50%),
+        radial-gradient(ellipse at bottom left, rgba(76,175,80,0.08) 0%, transparent 50%);
+    }
+    .hero-grid {
+      display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 48px; align-items: center;
+    }
+    @media (max-width: 860px) { .hero-grid { grid-template-columns: 1fr; gap: 32px; } }
+    .eyebrow {
+      display: inline-block; padding: 6px 14px; border-radius: 999px;
+      background: var(--green-100); color: var(--green-700);
+      font-size: 12px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    h1 {
+      font-size: clamp(32px, 5vw, 52px); line-height: 1.1;
+      color: var(--green-900); margin-bottom: 16px; font-weight: 800; letter-spacing: -0.02em;
+    }
+    .hero p.lead { font-size: 18px; color: var(--ink-600); margin-bottom: 32px; max-width: 540px; }
+    .cta-row { display: flex; gap: 12px; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 14px 24px; border-radius: 12px; font-weight: 600; font-size: 15px;
+      text-decoration: none; cursor: pointer; border: 0; transition: all 0.2s;
+    }
+    .btn-primary {
+      background: var(--green-700); color: white;
+      box-shadow: 0 4px 14px rgba(46,125,50,0.3);
+    }
+    .btn-primary:hover { background: var(--green-900); transform: translateY(-1px); }
+    .btn-primary:disabled, .btn-primary[aria-disabled="true"] {
+      background: #B5B5B5; box-shadow: none; cursor: not-allowed; transform: none;
+    }
+    .btn-ghost {
+      background: transparent; color: var(--green-700); border: 1.5px solid var(--green-700);
+    }
+    .btn-ghost:hover { background: var(--green-100); }
+    .meta { display: flex; gap: 20px; margin-top: 24px; font-size: 13px; color: var(--ink-400); flex-wrap: wrap; }
+    .meta span::before { content: "✓ "; color: var(--green-500); font-weight: 700; }
+
+    .phone {
+      position: relative; aspect-ratio: 9/16; max-width: 320px; margin: 0 auto;
+      background: linear-gradient(180deg, #1B5E20 0%, #2E7D32 100%);
+      border-radius: 36px; padding: 14px; box-shadow: var(--shadow);
+    }
+    .phone-screen {
+      width: 100%; height: 100%; border-radius: 24px;
+      background: linear-gradient(180deg, #F5F5F0 0%, #E8F5E9 100%);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      color: var(--green-900); padding: 24px; text-align: center;
+    }
+    .phone-screen .lens { font-size: 80px; margin-bottom: 16px; }
+    .phone-screen .label { font-weight: 700; font-size: 18px; }
+    .phone-screen .sub { font-size: 12px; color: var(--ink-600); margin-top: 4px; }
+
+    /* FEATURES */
+    section { padding: 64px 0; }
+    h2 {
+      font-size: clamp(26px, 4vw, 36px); color: var(--green-900);
+      text-align: center; margin-bottom: 12px; font-weight: 800; letter-spacing: -0.01em;
+    }
+    .section-lead {
+      text-align: center; color: var(--ink-600); max-width: 600px; margin: 0 auto 48px;
+    }
+    .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+    .feature {
+      background: white; border-radius: var(--radius); padding: 28px;
+      box-shadow: var(--shadow); transition: transform 0.2s;
+    }
+    .feature:hover { transform: translateY(-4px); }
+    .feature .icon {
+      width: 48px; height: 48px; border-radius: 12px; background: var(--green-100);
+      color: var(--green-700); display: grid; place-items: center; font-size: 24px; margin-bottom: 16px;
+    }
+    .feature h3 { font-size: 18px; color: var(--green-900); margin-bottom: 8px; }
+    .feature p { color: var(--ink-600); font-size: 14px; }
+
+    /* DISEASE LIST */
+    .disease-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px;
+    }
+    .disease {
+      background: white; border-left: 4px solid var(--green-500);
+      padding: 14px 18px; border-radius: 8px; font-size: 14px; font-weight: 500;
+    }
+    .disease small { display: block; color: var(--ink-400); font-size: 11px; margin-top: 2px; }
+
+    /* DOWNLOAD */
+    .download-card {
+      background: linear-gradient(135deg, var(--green-700), var(--green-900));
+      color: white; border-radius: 24px; padding: 48px; text-align: center;
+      box-shadow: 0 20px 50px rgba(46,125,50,0.25);
+    }
+    .download-card h2 { color: white; }
+    .download-card .section-lead { color: rgba(255,255,255,0.85); }
+    .download-card .btn-primary {
+      background: white; color: var(--green-900); margin-top: 8px;
+    }
+    .download-card .btn-primary:hover { background: var(--leaf-50); }
+    .version-pill {
+      display: inline-block; padding: 4px 12px; border-radius: 999px;
+      background: rgba(255,255,255,0.15); font-size: 12px; margin-bottom: 16px;
+    }
+    .status {
+      display: inline-flex; align-items: center; gap: 6px; margin-top: 12px;
+      font-size: 13px; color: rgba(255,255,255,0.7);
+    }
+    .status .dot {
+      width: 8px; height: 8px; border-radius: 50%; background: #FFC107;
+      box-shadow: 0 0 0 4px rgba(255,193,7,0.2);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+    /* FOOTER */
+    footer {
+      background: #1B5E20; color: rgba(255,255,255,0.75);
+      padding: 40px 0 24px; margin-top: 64px; text-align: center; font-size: 14px;
+    }
+    footer .brand { color: white; justify-content: center; margin-bottom: 12px; }
+    footer a { color: rgba(255,255,255,0.85); text-decoration: none; }
+    footer a:hover { color: white; text-decoration: underline; }
+    footer .small { margin-top: 16px; font-size: 12px; color: rgba(255,255,255,0.5); }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav">
+      <a href="#" class="brand" aria-label="Coffee Lens home">
+        <span class="brand-mark">C</span>
+        <span>Coffee Lens</span>
+      </a>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="#fitur" data-i18n="nav_features">Fitur</a>
+        <a href="#penyakit" data-i18n="nav_diseases">Penyakit</a>
+        <a href="#download" data-i18n="nav_download">Download</a>
+        <a href="#tentang" data-i18n="nav_about">Tentang</a>
+      </nav>
+      <div class="lang-toggle" role="group" aria-label="Language">
+        <button type="button" data-lang="id" class="active" aria-pressed="true">ID</button>
+        <button type="button" data-lang="en" aria-pressed="false">EN</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <span class="eyebrow" data-i18n="eyebrow">AI Pertanian · 100% Offline</span>
+          <h1 data-i18n="hero_title">Deteksi Penyakit Daun Kopi dalam Sekejap</h1>
+          <p class="lead" data-i18n="hero_lead">
+            Coffee Lens mengidentifikasi 5 jenis penyakit utama daun kopi lewat kamera ponsel.
+            Tanpa internet, tanpa biaya langganan — cukup bidik, hasil langsung muncul.
+          </p>
+          <div class="cta-row">
+            <a href="#download" class="btn btn-primary" data-i18n="cta_download">⬇ Download APK</a>
+            <a href="#fitur" class="btn btn-ghost" data-i18n="cta_learn">Pelajari Fitur</a>
+          </div>
+          <div class="meta">
+            <span data-i18n="meta_offline">Bekerja offline</span>
+            <span data-i18n="meta_free">Gratis</span>
+            <span data-i18n="meta_min">Android 8.0+</span>
+            <span data-i18n="meta_size">±25 MB</span>
+          </div>
+        </div>
+        <div class="phone" aria-hidden="true">
+          <div class="phone-screen">
+            <div class="lens">🌿</div>
+            <div class="label">Coffee Lens</div>
+            <div class="sub">Tap to scan</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="fitur">
+      <div class="container">
+        <h2 data-i18n="features_title">Kenapa Coffee Lens?</h2>
+        <p class="section-lead" data-i18n="features_lead">
+          Dibuat untuk petani kopi Aceh. Ringan, cepat, dan tetap jalan walau sinyal hilang.
+        </p>
+        <div class="features">
+          <div class="feature">
+            <div class="icon">📷</div>
+            <h3 data-i18n="f1_title">Scan Instan</h3>
+            <p data-i18n="f1_desc">Arahkan kamera ke daun, hasil klasifikasi muncul dalam &lt;1 detik.</p>
+          </div>
+          <div class="feature">
+            <div class="icon">🔌</div>
+            <h3 data-i18n="f2_title">100% Offline</h3>
+            <p data-i18n="f2_desc">Model AI tertanam di perangkat. Tidak butuh internet, tidak kirim data.</p>
+          </div>
+          <div class="feature">
+            <div class="icon">📚</div>
+            <h3 data-i18n="f3_title">Ensiklopedia</h3>
+            <p data-i18n="f3_desc">Pelajari gejala, penyebab, dan cara penanganan setiap penyakit.</p>
+          </div>
+          <div class="feature">
+            <div class="icon">💬</div>
+            <h3 data-i18n="f4_title">Chat AI</h3>
+            <p data-i18n="f4_desc">Tanya jawab perawatan kebun dengan asisten AI bawaan.</p>
+          </div>
+          <div class="feature">
+            <div class="icon">🏪</div>
+            <h3 data-i18n="f5_title">Toko Pertanian</h3>
+            <p data-i18n="f5_desc">Temui toko saprodi terdekat lewat peta, tanpa API key.</p>
+          </div>
+          <div class="feature">
+            <div class="icon">🌐</div>
+            <h3 data-i18n="f6_title">Bilingual</h3>
+            <p data-i18n="f6_desc">Antarmuka Indonesia & Inggris. Ganti kapan saja dari pengaturan.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="penyakit" style="background: white;">
+      <div class="container">
+        <h2 data-i18n="diseases_title">5 Penyakit yang Terdeteksi</h2>
+        <p class="section-lead" data-i18n="diseases_lead">
+          Model TFLite terlatih untuk mengenali penyakit daun kopi paling umum di Indonesia.
+        </p>
+        <div class="disease-grid">
+          <div class="disease">Healthy <small>Daun Sehat</small></div>
+          <div class="disease">Leaf Rust <small>Karat Daun</small></div>
+          <div class="disease">Leaf Miner <small>Penggerek Daun</small></div>
+          <div class="disease">Phoma Spot <small>Bercak Phoma</small></div>
+          <div class="disease">Red Spider Mite <small>Tungau Merah</small></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="download">
+      <div class="container">
+        <div class="download-card">
+          <span class="version-pill" data-i18n="version_pill">Versi 1.0 · Android 8.0+</span>
+          <h2 data-i18n="download_title">Siap Download</h2>
+          <p class="section-lead" data-i18n="download_lead">
+            Aplikasi sedang dalam tahap persiapan rilis. Daftarkan email untuk dapat notifikasi saat APK tersedia.
+          </p>
+          <a href="#" id="downloadBtn" class="btn btn-primary" aria-disabled="true" data-i18n="download_btn">
+            🔒 Segera Tersedia
+          </a>
+          <div class="status">
+            <span class="dot"></span>
+            <span data-i18n="status">APK sedang disiapkan · Coming soon</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="tentang" style="padding-bottom: 32px;">
+      <div class="container" style="text-align: center; max-width: 700px;">
+        <h2 data-i18n="about_title">Tentang Coffee Lens</h2>
+        <p style="color: var(--ink-600); margin-bottom: 16px;" data-i18n="about_p1">
+          Coffee Lens adalah aplikasi Android offline yang dikembangkan untuk membantu petani kopi
+          mengidentifikasi penyakit daun secara cepat dan akurat. Dikembangkan oleh mahasiswa
+          Universitas Serambi Mekkah, Aceh.
+        </p>
+        <p style="color: var(--ink-400); font-size: 14px;" data-i18n="about_p2">
+          Proyek tugas akhir · 2026 · Logo: Serambi Mekkah
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="brand">
+        <span class="brand-mark">C</span>
+        <span>Coffee Lens</span>
+      </div>
+      <p data-i18n="footer_tag">Deteksi penyakit daun kopi, di mana pun Anda berada.</p>
+      <p class="small">© 2026 Coffee Lens · Universitas Serambi Mekkah</p>
+    </div>
+  </footer>
+
+  <script>
+    const I18N = {
+      id: {
+        nav_features: "Fitur", nav_diseases: "Penyakit", nav_download: "Download", nav_about: "Tentang",
+        eyebrow: "AI Pertanian · 100% Offline",
+        hero_title: "Deteksi Penyakit Daun Kopi dalam Sekejap",
+        hero_lead: "Coffee Lens mengidentifikasi 5 jenis penyakit utama daun kopi lewat kamera ponsel. Tanpa internet, tanpa biaya langganan — cukup bidik, hasil langsung muncul.",
+        cta_download: "⬇ Download APK", cta_learn: "Pelajari Fitur",
+        meta_offline: "Bekerja offline", meta_free: "Gratis", meta_min: "Android 8.0+", meta_size: "±25 MB",
+        features_title: "Kenapa Coffee Lens?",
+        features_lead: "Dibuat untuk petani kopi Aceh. Ringan, cepat, dan tetap jalan walau sinyal hilang.",
+        f1_title: "Scan Instan", f1_desc: "Arahkan kamera ke daun, hasil klasifikasi muncul dalam <1 detik.",
+        f2_title: "100% Offline", f2_desc: "Model AI tertanam di perangkat. Tidak butuh internet, tidak kirim data.",
+        f3_title: "Ensiklopedia", f3_desc: "Pelajari gejala, penyebab, dan cara penanganan setiap penyakit.",
+        f4_title: "Chat AI", f4_desc: "Tanya jawab perawatan kebun dengan asisten AI bawaan.",
+        f5_title: "Toko Pertanian", f5_desc: "Temui toko saprodi terdekat lewat peta, tanpa API key.",
+        f6_title: "Bilingual", f6_desc: "Antarmuka Indonesia & Inggris. Ganti kapan saja dari pengaturan.",
+        diseases_title: "5 Penyakit yang Terdeteksi",
+        diseases_lead: "Model TFLite terlatih untuk mengenali penyakit daun kopi paling umum di Indonesia.",
+        version_pill: "Versi 1.0 · Android 8.0+",
+        download_title: "Siap Download",
+        download_lead: "Aplikasi sedang dalam tahap persiapan rilis. Daftarkan email untuk dapat notifikasi saat APK tersedia.",
+        download_btn: "🔒 Segera Tersedia",
+        status: "APK sedang disiapkan · Coming soon",
+        about_title: "Tentang Coffee Lens",
+        about_p1: "Coffee Lens adalah aplikasi Android offline yang dikembangkan untuk membantu petani kopi mengidentifikasi penyakit daun secara cepat dan akurat. Dikembangkan oleh mahasiswa Universitas Serambi Mekkah, Aceh.",
+        about_p2: "Proyek tugas akhir · 2026 · Logo: Serambi Mekkah",
+        footer_tag: "Deteksi penyakit daun kopi, di mana pun Anda berada."
+      },
+      en: {
+        nav_features: "Features", nav_diseases: "Diseases", nav_download: "Download", nav_about: "About",
+        eyebrow: "Agri AI · 100% Offline",
+        hero_title: "Detect Coffee Leaf Diseases in a Snap",
+        hero_lead: "Coffee Lens identifies 5 major coffee leaf diseases through your phone camera. No internet, no subscription — just point and shoot.",
+        cta_download: "⬇ Download APK", cta_learn: "Learn More",
+        meta_offline: "Works offline", meta_free: "Free", meta_min: "Android 8.0+", meta_size: "±25 MB",
+        features_title: "Why Coffee Lens?",
+        features_lead: "Built for Aceh coffee farmers. Lightweight, fast, and runs even when signal drops.",
+        f1_title: "Instant Scan", f1_desc: "Point the camera at a leaf — classification in <1 second.",
+        f2_title: "100% Offline", f2_desc: "AI model embedded on device. No internet, no data sent.",
+        f3_title: "Encyclopedia", f3_desc: "Learn symptoms, causes, and treatment for every disease.",
+        f4_title: "AI Chat", f4_desc: "Ask the built-in assistant about farm care anytime.",
+        f5_title: "Agri Store", f5_desc: "Find the nearest farm supply store via map, no API key needed.",
+        f6_title: "Bilingual", f6_desc: "Indonesian & English UI. Switch anytime in settings.",
+        diseases_title: "5 Diseases Detected",
+        diseases_lead: "TFLite model trained to recognize the most common coffee leaf diseases in Indonesia.",
+        version_pill: "Version 1.0 · Android 8.0+",
+        download_title: "Ready to Download",
+        download_lead: "The app is in release preparation. Subscribe to get notified when the APK is available.",
+        download_btn: "🔒 Coming Soon",
+        status: "APK in preparation · Coming soon",
+        about_title: "About Coffee Lens",
+        about_p1: "Coffee Lens is an offline Android app developed to help coffee farmers quickly and accurately identify leaf diseases. Built by a student at Universitas Serambi Mekkah, Aceh.",
+        about_p2: "Final year project · 2026 · Logo: Serambi Mekkah",
+        footer_tag: "Detect coffee leaf diseases, anywhere you are."
+      }
+    };
+
+    function setLang(lang) {
+      const dict = I18N[lang] || I18N.id;
+      document.documentElement.lang = lang;
+      document.querySelectorAll("[data-i18n]").forEach(el => {
+        const key = el.getAttribute("data-i18n");
+        if (dict[key]) el.innerHTML = dict[key];
+      });
+      document.querySelectorAll(".lang-toggle button").forEach(btn => {
+        const active = btn.dataset.lang === lang;
+        btn.classList.toggle("active", active);
+        btn.setAttribute("aria-pressed", String(active));
+      });
+      try { localStorage.setItem("coffee-lens-lang", lang); } catch (_) {}
+    }
+
+    document.querySelectorAll(".lang-toggle button").forEach(btn => {
+      btn.addEventListener("click", () => setLang(btn.dataset.lang));
+    });
+    try {
+      const saved = localStorage.getItem("coffee-lens-lang");
+      if (saved && I18N[saved]) setLang(saved);
+    } catch (_) {}
+  </script>
+</body>
+</html>

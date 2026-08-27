@@ -1,0 +1,20 @@
+{
+  "name": "Coffee Lens",
+  "short_name": "Coffee Lens",
+  "description": "Deteksi penyakit daun kopi secara offline dengan AI",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F5F5F0",
+  "theme_color": "#2E7D32",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["agriculture", "education", "utilities"],
+  "lang": "id",
+  "dir": "ltr"
+}
