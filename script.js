@@ -12,7 +12,7 @@ const I18N = {
     f2_title: "100% Offline", f2_desc: "Model AI tertanam di perangkat. Tidak butuh internet, tidak kirim data.",
     f3_title: "Ensiklopedia", f3_desc: "Pelajari gejala, penyebab, dan cara penanganan setiap penyakit.",
     f4_title: "Chat AI", f4_desc: "Tanya jawab perawatan kebun dengan asisten AI bawaan.",
-    f5_title: "Toko Pertanian", f5_desc: "Temui toko saprodi terdekat lewat peta, tanpa API key.",
+    f5_title: "Toko Pertanian", f5_desc: "Temukan toko pertanian terdekat lewat peta.",
     f6_title: "Bilingual", f6_desc: "Antarmuka Indonesia & Inggris. Ganti kapan saja dari pengaturan.",
     diseases_title: "5 Penyakit yang Terdeteksi",
     diseases_lead: "Model TFLite terlatih untuk mengenali penyakit daun kopi paling umum di Indonesia.",
@@ -22,7 +22,7 @@ const I18N = {
     download_btn: "🔒 Segera Tersedia",
     status: "APK sedang disiapkan · Coming soon",
     about_title: "Tentang Coffee Lens",
-    about_p1: "Coffee Lens adalah aplikasi Android offline yang dikembangkan untuk membantu petani kopi mengidentifikasi penyakit daun secara cepat dan akurat. Dikembangkan oleh mahasiswa Universitas Serambi Mekkah, Aceh.",
+    about_p1: "Coffee Lens adalah aplikasi Android offline yang dikembangkan untuk membantu petani kopi mengidentifikasi penyakit daun secara cepat dan akurat. Dikembangkan oleh tim mahasiswa Universitas Serambi Mekkah, Aceh.",
     about_p2: "Project Kampus · 2026 ·",
     footer_tag: "Deteksi penyakit daun kopi, di mana pun Anda berada."
   },
