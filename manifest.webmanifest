@@ -8,16 +8,16 @@
   "theme_color": "#2E7D32",
   "icons": [
     {
-      "src": "favicon-32-simple.png",
-      "sizes": "32x32",
-      "type": "image/png",
+      "src": "assets/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
       "purpose": "any"
     },
     {
-      "src": "apple-touch-icon.png",
-      "sizes": "180x180",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "src": "assets/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
     }
   ],
   "categories": ["agriculture", "education", "utilities"],
