@@ -39,7 +39,7 @@ const I18N = {
     f2_title: "100% Offline", f2_desc: "AI model embedded on device. No internet, no data sent.",
     f3_title: "Encyclopedia", f3_desc: "Learn symptoms, causes, and treatment for every disease.",
     f4_title: "AI Chat", f4_desc: "Ask the built-in assistant about farm care anytime.",
-    f5_title: "Agri Store", f5_desc: "Find the nearest farm supply store via map, no API key needed.",
+    f5_title: "Agri Store", f5_desc: "Find the nearest farm supply store via map.",
     f6_title: "Bilingual", f6_desc: "Indonesian & English UI. Switch anytime in settings.",
     diseases_title: "5 Diseases Detected",
     diseases_lead: "TFLite model trained to recognize the most common coffee leaf diseases in Indonesia.",
