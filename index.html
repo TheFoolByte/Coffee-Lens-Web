@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+  <script>
+    if (window.location.hostname === "coffee-lens-web.rohandhika.workers.dev") {
+      window.location.replace("https://coffeelens.web.id" + window.location.pathname + window.location.search);
+    }
+  </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Coffee Lens — aplikasi Android pendeteksi penyakit daun kopi secara offline berbasis AI. Cepat, akurat, tanpa internet." />
